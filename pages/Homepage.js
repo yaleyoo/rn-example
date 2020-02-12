@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { View, FlatList, Text, TouchableHighlight, StyleSheet, SafeAreaView } from 'react-native';
+import { View, FlatList, StyleSheet, SafeAreaView } from 'react-native';
 import {getPosts} from '../utils/APIs';
 import Constants from 'expo-constants';
 import PostItem from '../component/PostItem';
@@ -46,4 +46,4 @@ const styles = StyleSheet.create({
       marginHorizontal: '5%',
       width: '90%'
     },
-  });
+});

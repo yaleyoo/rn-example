@@ -1,16 +1,33 @@
 import React, { Component } from "react";
-import { View, StyleSheet, Text, SafeAreaView } from "react-native";
+import { View, StyleSheet, Text, SafeAreaView, Button } from "react-native";
 import {getPostDetail} from '../utils/APIs';
 import Constants from 'expo-constants';
 import { ScrollView } from "react-native-gesture-handler";
+import {setFontSize} from '../data/actions';
+import {connect} from 'react-redux';
+import { Slider, Card  } from 'react-native-elements';
 
-export default class PostDetail extends Component {
+class PostDetail extends Component {
     state = {
-        post: null
+        post: null,
+        showSlider: false,
+        fontSize: this.props.fontSize
     }
 
     constructor(props) {
         super(props);
+    }
+
+    componentWillMount() {
+        this.props.navigation.setOptions({
+            headerRight: () => (
+                <Button
+                  onPress={() => this.setState({showSlider: true})}
+                  title="A"
+                  color="#000"
+                />
+              ),
+        })
     }
 
     componentDidMount() {
@@ -26,17 +43,40 @@ export default class PostDetail extends Component {
             <View></View>
             :
             <SafeAreaView style={styles.container}>
+                {this.state.showSlider &&
+                <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                    <Card title="调节字体大小" containerStyle={{width: '80%', height: 160}}>
+                        <Slider
+                            value={this.state.fontSize}
+                            minimumValue={20}
+                            maximumValue={40}
+                            step={1}
+                            onValueChange={(value) => this.setState({fontSize: value})}
+                        />
+                        <Text>Value: {this.state.fontSize}</Text>
+                        <Button title="确认更改" 
+                            containerStyle={{width: '100%'}}
+                            buttonStyle={{backgroundColor: '#e06773', }}  
+                            onPress={() => {
+                                this.setState({showSlider: false});
+                                this.props.setFontSize(this.state.fontSize)
+                            }} />
+                    </Card>
+                </View>
+                }
+                {!this.state.showSlider &&
                 <ScrollView>
                     <View style={{flex: 1, marginBottom: 40 }}>
-                        <Text>{this.state.post.title.rendered}</Text>
+                        <Text style={{fontSize: this.props.fontSize}}>{this.state.post.title.rendered}</Text>
                     </View>
                     <View style={{flex: 1, marginBottom: 20}}>
-                        <Text>{this.state.post.date}</Text>
+                        <Text style={{fontSize: this.props.fontSize}}>{this.state.post.date}</Text>
                     </View>
                     <View>
-                        <Text>{this.state.post.content.rendered}</Text>
+                        <Text style={{fontSize: this.props.fontSize}}>{this.state.post.content.rendered}</Text>
                     </View>
                 </ScrollView>
+                }
             </SafeAreaView>
         )
     }
@@ -49,4 +89,15 @@ const styles = StyleSheet.create({
       marginHorizontal: '5%',
       width: '90%'
     },
-  });
+});
+
+const mapStateToProps = state => {
+    return { 
+        fontSize : state.rootStore.fontSize,
+    };
+}
+
+export default connect(
+    mapStateToProps,
+    { setFontSize }
+)(PostDetail)
