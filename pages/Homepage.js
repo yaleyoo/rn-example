@@ -29,9 +29,9 @@ export default class Homepage extends Component {
             <SafeAreaView style={styles.container}>
                 <FlatList
                     data={this.state.posts}
-                    keyExtractor={item => item.id}
+                    keyExtractor={item => item.id+''}
                     renderItem={({item, index, separators}) => (
-                        <PostItem title={item.title.rendered} image={item.type_img} />
+                        <PostItem {...this.props} title={item.title.rendered} image={item.type_img} id={item.id} />
                     )}
                 />
             </SafeAreaView>
