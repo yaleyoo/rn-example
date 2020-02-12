@@ -1,2 +1,4 @@
 
 node_modules/*
+.expo/*
+web-build/register-service-worker.js
